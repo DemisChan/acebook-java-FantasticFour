@@ -70,8 +70,6 @@ public class EditPostTest {
       driver.findElement(By.id("edit-input")).sendKeys(editText);
       driver.findElement(By.id("submit-edit")).click();
 
-
-
       List<WebElement> editedPostsList = driver.findElements(By.className("post-content"));
 
       //check if last element on list is same with edited
