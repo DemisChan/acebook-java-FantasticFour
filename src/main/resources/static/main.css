@@ -78,9 +78,10 @@ li {
   }
 
   .sign-in-box {
+    margin-top: 10rem;
     position: relative;
-    display       : grid;
-    place-content : center;
+    display: grid;
+    justify-content: center;
   }
 
   .post-div {
@@ -131,6 +132,10 @@ li {
 
   .post-user-img{
     margin-top: -5px;
+  }
+
+  .login{
+    text-align: center;
   }
 
   
