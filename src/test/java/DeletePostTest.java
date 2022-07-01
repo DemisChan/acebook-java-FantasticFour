@@ -17,14 +17,13 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 @RunWith(SpringJUnit4ClassRunner.class)
 @SpringBootTest(classes = Application.class)
 
-public class EditPostTest {
+public class DeletePostTest {
 
     WebDriver driver;
     Faker faker;
     String username;
     String password;
     String testText;
-    String editText;
     String id;
 
     @Before
@@ -34,8 +33,7 @@ public class EditPostTest {
       faker = new Faker();
       username = faker.name().firstName();
       password= "mypassword";
-      testText = "This text was made by EditPostTest";
-      editText = "This text was Edited";
+      testText = "This text was made by DeletePostTest";
     } 
 
     @After
@@ -44,7 +42,7 @@ public class EditPostTest {
     }
 
     @Test
-    public void EditPost(){
+    public void deletePostsById(){
       driver.get("http://localhost:8080/users/new");
       driver.findElement(By.id("username")).sendKeys(username);
       driver.findElement(By.id("password")).sendKeys(password);
@@ -60,21 +58,25 @@ public class EditPostTest {
       //inputs testText into the form and sumbits the post
       List<WebElement> postsList = driver.findElements(By.className("post-content")); 
 
-
-      //Check last element on list is the post we posted
-      WebElement firstPost = postsList.get(0);
+      Integer firstIndex = 0;
+      WebElement firstPost = postsList.get(firstIndex);
       Assert.assertEquals(testText, firstPost.getText());
-
-      driver.findElement(By.id("edit-link")).click();
-      driver.findElement(By.id("edit-input")).clear();
-      driver.findElement(By.id("edit-input")).sendKeys(editText);
-      driver.findElement(By.id("submit-edit")).click();
-
-      List<WebElement> editedPostsList = driver.findElements(By.className("post-content"));
-
-      //check if last element on list is same with edited
-      WebElement editedFirstPost = editedPostsList.get(0);
-      Assert.assertEquals(editText, editedFirstPost.getText());
-
+       //checks that the post is on the page
+      
+      driver.findElement(By.id("delete-btn")).click();
+      List<WebElement> newpostsList = driver.findElements(By.className("post-class"));
+      Integer numberofposts = newpostsList.size();
+      postsList = driver.findElements(By.className("post-class"));
+      Assert.assertEquals(Integer.valueOf(postsList.size()), Integer.valueOf(numberofposts));
+      //Deletes the post and checks that there is one less post on the page
+     
+         
+      // create another post (to create a more realistic scenario)
+      // create new post
+      // get list of ids of posts
+      // get last post id (since latest post will always be last)
+      // click delete button that has that id
+      // refresh page
+      // check that no post has that content + id
     }
 }

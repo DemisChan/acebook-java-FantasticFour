@@ -1,6 +1,11 @@
 import com.github.javafaker.Faker;
 import com.makersacademy.acebook.Application;
+
+import java.util.ArrayList;
 import java.util.List;
+
+import javax.persistence.PostLoad;
+
 import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
@@ -17,15 +22,13 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 @RunWith(SpringJUnit4ClassRunner.class)
 @SpringBootTest(classes = Application.class)
 
-public class EditPostTest {
+public class EmptyPostTest {
 
     WebDriver driver;
     Faker faker;
     String username;
     String password;
     String testText;
-    String editText;
-    String id;
 
     @Before
     public void setup() {
@@ -33,9 +36,8 @@ public class EditPostTest {
       driver = new ChromeDriver();
       faker = new Faker();
       username = faker.name().firstName();
-      password= "mypassword";
-      testText = "This text was made by EditPostTest";
-      editText = "This text was Edited";
+      password= "mypassword";   
+      testText = "    "; 
     } 
 
     @After
@@ -44,7 +46,7 @@ public class EditPostTest {
     }
 
     @Test
-    public void EditPost(){
+    public void testPostingEmptyString(){
       driver.get("http://localhost:8080/users/new");
       driver.findElement(By.id("username")).sendKeys(username);
       driver.findElement(By.id("password")).sendKeys(password);
@@ -55,26 +57,36 @@ public class EditPostTest {
       driver.findElement(By.className("btn")).click();
       //signed in as username
 
+      List<WebElement> postsList = driver.findElements(By.className("post-class"));
+      //get number of posts
+      driver.findElement(By.id("submit")).click();
+      //submit empty post
+
+      List<WebElement> newPostsList = driver.findElements(By.className("post-class"));
+      Assert.assertEquals(postsList.size(), newPostsList.size());
+      //check that the number of posts hasn't changed
+    }
+
+    @Test
+    public void testPostingStringOfOnlySpace(){
+      driver.get("http://localhost:8080/users/new");
+      driver.findElement(By.id("username")).sendKeys(username);
+      driver.findElement(By.id("password")).sendKeys(password);
+      driver.findElement(By.id("submit")).click();
+      //Sign up as username
+      driver.findElement(By.id("username")).sendKeys(username);
+      driver.findElement(By.id("password")).sendKeys(password);
+      driver.findElement(By.className("btn")).click();
+      //signed in as username
+
+      List<WebElement> postsList = driver.findElements(By.className("post-class"));
+      //get number of posts
       driver.findElement(By.id("content-input")).sendKeys(testText);
       driver.findElement(By.id("submit")).click();
-      //inputs testText into the form and sumbits the post
-      List<WebElement> postsList = driver.findElements(By.className("post-content")); 
+      //submit a post that only contains spaces
 
-
-      //Check last element on list is the post we posted
-      WebElement firstPost = postsList.get(0);
-      Assert.assertEquals(testText, firstPost.getText());
-
-      driver.findElement(By.id("edit-link")).click();
-      driver.findElement(By.id("edit-input")).clear();
-      driver.findElement(By.id("edit-input")).sendKeys(editText);
-      driver.findElement(By.id("submit-edit")).click();
-
-      List<WebElement> editedPostsList = driver.findElements(By.className("post-content"));
-
-      //check if last element on list is same with edited
-      WebElement editedFirstPost = editedPostsList.get(0);
-      Assert.assertEquals(editText, editedFirstPost.getText());
-
+      List<WebElement> newPostsList = driver.findElements(By.className("post-class"));
+      Assert.assertEquals(postsList.size(), newPostsList.size());
+      //check that the number of posts hasn't changed
     }
 }
